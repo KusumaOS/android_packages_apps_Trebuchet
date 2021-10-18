@@ -141,6 +141,10 @@ public final class Utilities {
     public static final String GSA_PACKAGE = "com.google.android.googlequicksearchbox";
     public static final String GSA_LITE_PACKAGE = "com.google.android.apps.searchlite";
 
+    public static final String LENS_ACTIVITY = "com.google.android.apps.lens.MainActivity";
+    public static final String LENS_URI = "google://lens";
+    public static final String LENS_SHARE_ACTIVITY = "com.google.android.apps.search.lens.LensShareEntryPointActivity";
+
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
      * add extra logging and not for changing the app behavior.
