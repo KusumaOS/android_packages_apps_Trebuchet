@@ -26,6 +26,9 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_CLOSE_TAP_OUTSIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_LONGPRESS;
 
+import static lineageos.providers.LineageSettings.System.DOUBLE_TAP_SLEEP_GESTURE;
+
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -47,6 +50,8 @@ import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.TouchUtil;
+
+import lineageos.providers.LineageSettings;
 
 /**
  * Helper class to handle touch on empty space in workspace and show options popup on long press
@@ -77,6 +82,8 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     private final GestureDetector mGestureDetector;
 
+    private final ContentResolver mContentResolver;
+
     public WorkspaceTouchListener(Launcher launcher, Workspace<?> workspace) {
         mLauncher = launcher;
         mWorkspace = workspace;
@@ -85,6 +92,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
         mTouchSlop = 2 * ViewConfiguration.get(launcher).getScaledTouchSlop();
         mPm = (PowerManager) workspace.getContext().getSystemService(Context.POWER_SERVICE);
         mGestureDetector = new GestureDetector(workspace.getContext(), this);
+        mContentResolver = workspace.getContext().getContentResolver();
     }
 
     @Override
@@ -218,7 +226,9 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     @Override
     public boolean onDoubleTap(MotionEvent event) {
-        mPm.goToSleep(event.getEventTime());
+        if (LineageSettings.System.getInt(
+                mContentResolver, DOUBLE_TAP_SLEEP_GESTURE, 1) == 1)
+            mPm.goToSleep(event.getEventTime());
         return true;
     }
 }
