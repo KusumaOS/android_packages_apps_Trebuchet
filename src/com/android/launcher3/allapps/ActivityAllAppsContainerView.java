@@ -90,6 +90,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import ink.kaleidoscope.ParallelSpaceManager;
+
 /**
  * All apps container view with search support for use in a dragging activity.
  *
@@ -111,12 +113,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     protected final T mActivityContext;
     protected final List<AdapterHolder> mAH;
-    protected final Predicate<ItemInfo> mPersonalMatcher = ItemInfoMatcher.ofUser(
-            Process.myUserHandle());
     protected final WorkProfileManager mWorkManager;
     protected final Point mFastScrollerOffset = new Point();
     protected final int mScrimColor;
     protected final float mHeaderThreshold;
+
+    protected Predicate<ItemInfo> mPersonalMatcher;
 
     // Used to animate Search results out and A-Z apps in, or vice-versa.
     private final SearchTransitionController mSearchTransitionController;
@@ -183,6 +185,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 mActivityContext.getSystemService(UserManager.class),
                 this, mActivityContext.getStatsLogManager());
         mAH = Arrays.asList(null, null, null);
+        updateMatcher();
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
 
@@ -838,8 +841,16 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         // added in TaskbarAllAppsContainerView and header protection is not yet supported.
     }
 
+    private void updateMatcher() {
+        mPersonalMatcher = ItemInfoMatcher.ofUser(
+                Process.myUserHandle()).or(ItemInfoMatcher.ofUsers(
+                    ParallelSpaceManager.getInstance().getParallelUserHandles()));
+        mWorkManager.updateMatcher();
+    }
+
     private void onAppsUpdated() {
         mHasWorkApps = Stream.of(mAllAppsStore.getApps()).anyMatch(mWorkManager.getMatcher());
+        updateMatcher();
         if (TestProtocol.sDebugTracing) {
             Log.d(WORK_TAB_MISSING, "ActivityAllAppsContainerView#onAppsUpdated hasWorkApps: " +
                     mHasWorkApps + " allApps: " + mAllAppsStore.getApps().length);
