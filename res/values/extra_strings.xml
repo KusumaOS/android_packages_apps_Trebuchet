@@ -22,4 +22,8 @@
     <string name="icon_pack_default_label">Default</string>
     <string name="icon_pack_add">Install more</string>
     <string name="icon_pack_no_market">There\'s no available app store</string>
+
+    <!-- Hotseat QSB -->
+    <string name="hotseat_qsb_pref_title">Show Google search bar</string>
+    <string name="hotseat_qsb_pref_summary">On the bottom home screen</string>
 </resources>

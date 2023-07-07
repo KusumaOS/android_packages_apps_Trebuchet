@@ -18,6 +18,8 @@ package com.android.launcher3.settings;
 
 import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
 
+import static com.android.launcher3.Utilities.GSA_PACKAGE;
+import static com.android.launcher3.Utilities.KEY_HOTSEAT_QSB;
 import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 
@@ -208,7 +210,9 @@ public class SettingsActivity extends FragmentActivity
 
         private String mHighLightKey;
         private boolean mPreferenceHighlighted = false;
-        private Preference mDeveloperOptionPref;
+        private Preference mDeveloperOptionPref, mHotseatQsbPref;
+
+        private boolean mPendingRestart = false;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -263,6 +267,16 @@ public class SettingsActivity extends FragmentActivity
                 }
                 getActivity().setTitle(getPreferenceScreen().getTitle());
             }
+
+            LauncherPrefs.getPrefs(getContext()).registerOnSharedPreferenceChangeListener(
+                (sharedPrefs, key) -> {
+                    switch (key) {
+                        case KEY_HOTSEAT_QSB:
+                            mPendingRestart = true;
+                            break;
+                    }
+                }
+            );
         }
 
         @Override
@@ -352,6 +366,11 @@ public class SettingsActivity extends FragmentActivity
                 case IconDatabase.KEY_ICON_PACK:
                     setupIconPackPreference(preference);
                     return true;
+
+                case KEY_HOTSEAT_QSB:
+                    mHotseatQsbPref = preference;
+                    updateIsQsbAvailable();
+                    return true;
             }
 
             return true;
@@ -375,11 +394,18 @@ public class SettingsActivity extends FragmentActivity
             return showPreference;
         }
 
+        private void updateIsQsbAvailable() {
+            if (mHotseatQsbPref != null) {
+                mHotseatQsbPref.setVisible(Utilities.isQsbAvailable(getContext()));
+            }
+        }
+
         @Override
         public void onResume() {
             super.onResume();
 
             updateDeveloperOption();
+            updateIsQsbAvailable();
 
             if (isAdded() && !mPreferenceHighlighted) {
                 PreferenceHighlighter highlighter = createHighlighter();
@@ -389,6 +415,15 @@ public class SettingsActivity extends FragmentActivity
                 } else {
                     requestAccessibilityFocus(getListView());
                 }
+            }
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+
+            if (mPendingRestart) {
+                Utilities.restart();
             }
         }
 
