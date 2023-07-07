@@ -79,6 +79,7 @@ import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
+import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.testing.shared.ResourceUtils;
@@ -134,6 +135,10 @@ public final class Utilities {
      * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
      */
     public static final int EDGE_NAV_BAR = 1 << 8;
+
+    public static final String KEY_HOTSEAT_QSB = "pref_hotseat_qsb";
+
+    public static final String GSA_PACKAGE = "com.google.android.googlequicksearchbox";
 
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
@@ -745,6 +750,23 @@ public final class Utilities {
                 label, matrix, matrixValues[Matrix.MSCALE_X], matrixValues[Matrix.MSCALE_Y],
                 matrixValues[Matrix.MTRANS_X], matrixValues[Matrix.MTRANS_Y]
         ));
+    }
+
+    public static boolean isQsbAvailable(Context context) {
+        return QsbContainerView.getSearchWidgetProviderInfo(context) != null;
+    }
+
+    public static boolean isHotseatQsbEnabledByUser(Context context) {
+        SharedPreferences prefs = LauncherPrefs.getPrefs(context.getApplicationContext());
+        return prefs.getBoolean(KEY_HOTSEAT_QSB, true);
+    }
+
+    public static boolean isHotseatQsbEnabled(Context context) {
+        return isQsbAvailable(context) && isHotseatQsbEnabledByUser(context);
+    }
+
+    public static void restart() {
+        Process.killProcess(Process.myPid());
     }
 
     /**
