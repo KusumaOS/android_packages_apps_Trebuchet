@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2024 Kusuma
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+    <!-- Gestures -->
+    <string name="pref_dt_gesture_title">Ketuk ganda untuk tidur</string>
+    <string name="pref_dt_gesture_summary">Ketuk ganda di layar yang kosong untuk mematikan layar</string>
+
+    <!-- Preference default value -->
+    <string name="pref_value_default">Default</string>
+
+    <!-- Icon pack -->
+    <string name="icon_pack_title">Paket ikon</string>
+    <string name="icon_pack_default_label">Default</string>
+    <string name="icon_pack_add">Tambahkan</string>
+    <string name="icon_pack_no_market">Tidak ada toko aplikasi yang tersedia</string>
+    <string name="icon_pack_disabled">Untuk mengaktifkan, ubah ikon bertema ke nonaktif</string>
+
+    <!-- Hotseat QSB -->
+    <string name="hotseat_qsb_pref_title">Tampilkan bilah pencarian Google</string>
+    <string name="hotseat_qsb_pref_summary">Di bagian bawah layar utama</string>
+
+    <!-- Lock or unlock task -->
+    <string name="recent_task_option_lock_app">Tahan</string>
+    <string name="recent_task_option_unlock_app">Lepaskan</string>
+
+    <!-- Force stop task -->
+    <string name="recent_task_option_kill_app">Paksa berhenti</string>
+</resources>
