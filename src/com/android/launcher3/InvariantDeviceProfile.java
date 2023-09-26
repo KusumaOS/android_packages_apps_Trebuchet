@@ -469,7 +469,7 @@ public class InvariantDeviceProfile implements OnSharedPreferenceChangeListener 
                 .filter(deviceProfile -> deviceProfile.isTablet)
                 .forEach(deviceProfile -> {
                     deviceProfile.numShownHotseatIcons = numMinShownHotseatIconsForTablet;
-                    deviceProfile.recalculateHotseatWidthAndBorderSpace();
+                    deviceProfile.recalculateHotseatWidthAndBorderSpace(context);
                 });
 
         ComponentName cn = new ComponentName(context.getPackageName(), getClass().getName());
