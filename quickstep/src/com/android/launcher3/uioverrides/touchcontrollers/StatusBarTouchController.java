@@ -23,7 +23,12 @@ import static android.view.WindowManager.LayoutParams.FLAG_SLIPPERY;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN;
 
+import static lineageos.providers.LineageSettings.System.STATUS_BAR_QUICK_QS_PULLDOWN;
+
+import android.app.StatusBarManager;
+import android.database.ContentObserver;
 import android.graphics.PointF;
+import android.os.Handler;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -34,8 +39,11 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.SystemUiProxy;
+
+import lineageos.providers.LineageSettings;
 
 import java.io.PrintWriter;
 
@@ -50,19 +58,30 @@ public class StatusBarTouchController implements TouchController {
 
     private final Launcher mLauncher;
     private final SystemUiProxy mSystemUiProxy;
-    private final float mTouchSlop;
+    private float mTouchSlop;
     private int mLastAction;
     private final SparseArray<PointF> mDownEvents;
+    private final StatusBarManager mSbManager;
+    private int mFasterSbExpansion;
 
     /* If {@code false}, this controller should not handle the input {@link MotionEvent}.*/
     private boolean mCanIntercept;
 
+    private final ContentObserver mSettingObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            updateFasterSbExpansion();
+        }
+    };
+
     public StatusBarTouchController(Launcher l) {
         mLauncher = l;
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(mLauncher);
-        // Guard against TAPs by increasing the touch slop.
-        mTouchSlop = 2 * ViewConfiguration.get(l).getScaledTouchSlop();
         mDownEvents = new SparseArray<>();
+        mSbManager = l.getSystemService(StatusBarManager.class);
+        l.getContentResolver().registerContentObserver(LineageSettings.System.getUriFor(
+                STATUS_BAR_QUICK_QS_PULLDOWN), false, mSettingObserver);
+        updateFasterSbExpansion();
     }
 
     @Override
@@ -71,13 +90,63 @@ public class StatusBarTouchController implements TouchController {
         writer.println(prefix + "mLastAction:" + MotionEvent.actionToString(mLastAction));
         writer.println(prefix + "mSysUiProxy available:"
                 + SystemUiProxy.INSTANCE.get(mLauncher).isActive());
+        writer.println(prefix + "mFasterSbExpansion:" + mFasterSbExpansion);
+        writer.println(prefix + "mTouchSlop:" + mTouchSlop);
+    }
+
+    public void onDestroy() {
+        mLauncher.getContentResolver().unregisterContentObserver(mSettingObserver);
+    }
+
+    private void updateFasterSbExpansion() {
+        mFasterSbExpansion = LineageSettings.System.getInt(mLauncher.getContentResolver(),
+                STATUS_BAR_QUICK_QS_PULLDOWN, 0);
+
+        // Guard against TAPs by increasing the touch slop.
+        int touchSlopMultiplier = (mFasterSbExpansion != 0) ? 4 : 2;
+        mTouchSlop = touchSlopMultiplier * ViewConfiguration.get(mLauncher).getScaledTouchSlop();
     }
 
     private void dispatchTouchEvent(MotionEvent ev) {
+        mLastAction = ev.getActionMasked();
+        if (handleFasterSbExpansion(ev)) {
+            return;
+        }
         if (mSystemUiProxy.isActive()) {
             mLastAction = ev.getActionMasked();
             mSystemUiProxy.onStatusBarMotionEvent(ev);
         }
+    }
+
+    private boolean handleFasterSbExpansion(MotionEvent ev) {
+        if (mFasterSbExpansion == 0) {
+            return false;
+        }
+        if (mLastAction == ACTION_DOWN) {
+            float x = ev.getX();
+            float w = mLauncher.getResources().getDisplayMetrics().widthPixels;
+            float region = w * 0.25f; // Matches one finger QS expand region in SystemUI
+            boolean expandQs = false;
+            switch (mFasterSbExpansion) {
+                case 1: // Right side
+                    expandQs = Utilities.isRtl(mLauncher.getResources())
+                            ? (x < region) : (w - region < x);
+                    break;
+                case 2: // Left side
+                    expandQs = Utilities.isRtl(mLauncher.getResources())
+                            ? (w - region < x) : (x < region);
+                    break;
+                default:
+                    break;
+            }
+            if (expandQs) {
+                mSbManager.expandSettingsPanel();
+            } else {
+                mSbManager.expandNotificationsPanel();
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -162,6 +231,6 @@ public class StatusBarTouchController implements TouchController {
                 return false;
             }
         }
-        return SystemUiProxy.INSTANCE.get(mLauncher).isActive();
+        return mFasterSbExpansion != 0 || SystemUiProxy.INSTANCE.get(mLauncher).isActive();
     }
 }

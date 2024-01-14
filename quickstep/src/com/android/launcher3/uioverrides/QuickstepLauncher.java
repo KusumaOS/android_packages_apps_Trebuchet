@@ -218,6 +218,7 @@ public class QuickstepLauncher extends Launcher {
     private @Nullable DragOptions mNextWorkspaceDragOptions = null;
     private @Nullable UnfoldTransitionProgressProvider mUnfoldTransitionProgressProvider;
     private @Nullable LauncherUnfoldAnimationController mLauncherUnfoldAnimationController;
+    private @Nullable StatusBarTouchController mStatusBarTouchController;
 
     private SplitSelectStateController mSplitSelectStateController;
     private SplitWithKeyboardShortcutController mSplitWithKeyboardShortcutController;
@@ -491,6 +492,10 @@ public class QuickstepLauncher extends Launcher {
             mLauncherUnfoldAnimationController.onDestroy();
         }
 
+        if (mStatusBarTouchController != null) {
+            mStatusBarTouchController.onDestroy();
+        }
+
         super.onDestroy();
         mHotseatPredictionController.destroy();
         mSplitWithKeyboardShortcutController.onDestroy();
@@ -567,7 +572,8 @@ public class QuickstepLauncher extends Launcher {
         }
 
         if (!getDeviceProfile().isMultiWindowMode) {
-            list.add(new StatusBarTouchController(this));
+            mStatusBarTouchController = new StatusBarTouchController(this);
+            list.add(mStatusBarTouchController);
         }
 
         list.add(new LauncherTaskViewController(this));
