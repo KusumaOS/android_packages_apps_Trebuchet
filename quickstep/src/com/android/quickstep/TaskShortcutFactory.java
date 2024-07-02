@@ -165,7 +165,7 @@ public interface TaskShortcutFactory {
             sb.append(isLocked);
             sb.append(" -> ");
             sb.append(!isLocked);
-            Log.d(LockedSystemShortcut.class.getName () , "getLockTask: ");
+            // Log.d(LockedSystemShortcut.class.getName () , "getLockTask: ");
             TaskUtilLockState.setTaskLockState(tv.getContext(), task.key.baseIntent.getComponent(), isLocked, task.key);
             tv.updateLockedView(isLocked, false);
         }

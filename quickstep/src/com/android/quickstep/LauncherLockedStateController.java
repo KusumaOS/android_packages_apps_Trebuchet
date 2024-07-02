@@ -66,10 +66,10 @@ public class LauncherLockedStateController {
                 this.mLockedListWithUserId = sharedPreferences.getStringSet(TASK_LOCK_LIST_KEY_WITH_USERID, new HashSet<>());
                 this.mLockedPackageNameListWithUserId = new ArrayList<>();
                 int currentUserId = ActivityManagerWrapper.getInstance().getCurrentUserId();
-                Log.d(TAG, "init userId tasklock list: " + this.mLockedListWithUserId.size() + ", id:" + currentUserId + ", " + mReloaded + ", " + z + ", pkgName:" + packageName);
+                // Log.d(TAG, "init userId tasklock list: " + this.mLockedListWithUserId.size() + ", id:" + currentUserId + ", " + mReloaded + ", " + z + ", pkgName:" + packageName);
                 if (this.mLockedListWithUserId.isEmpty()) {
                     boolean lockedListFromProvider = getLockedListFromProvider(currentUserId);
-                    Log.d(TAG, "hasbackup = " + lockedListFromProvider);
+                    // Log.d(TAG, "hasbackup = " + lockedListFromProvider);
                     if (lockedListFromProvider) {
                         buildPkgNameList();
                     }
@@ -125,7 +125,7 @@ public class LauncherLockedStateController {
                         Settings.System.putStringForUser(this.mContext.getContentResolver(), RECENT_TASK_LOCKED_LIST_BK, "done", ActivityManagerWrapper.getInstance().getCurrentUserId());
                     }
                 } catch (Exception e) {
-                    Log.e(TAG, "setTaskLockState error : ", e);
+                    // Log.e(TAG, "setTaskLockState error : ", e);
                 }
             }
         }
@@ -174,7 +174,7 @@ public class LauncherLockedStateController {
                 public void run() {
                     int userId = UserHandle.getUserId(i);
                     String str2 = "{" + str + "/";
-                    Log.d(TAG, "uninstall Lock task , " + str + ", " + userId);
+                    // Log.d(TAG, "uninstall Lock task , " + str + ", " + userId);
                     ArrayList<String> arrayList = new ArrayList<>(LauncherLockedStateController.this.mLockedListWithUserId);
                     int size = arrayList.size();
                     for (int i2 = 0; i2 < size; i2++) {
@@ -263,7 +263,7 @@ public class LauncherLockedStateController {
                 try {
                     Settings.System.putStringForUser(LauncherLockedStateController.this.mContext.getContentResolver(), LauncherLockedStateController.RECENT_TASK_LOCKED_LIST, str, i);
                 } catch (Exception e) {
-                    Log.e(TAG, "writeLockedListToProvider error: ", e);
+                    // Log.e(TAG, "writeLockedListToProvider error: ", e);
                 }
             }
         });
@@ -295,7 +295,7 @@ public class LauncherLockedStateController {
         try {
             printWriter.println("RECENT_TASK_LOCKED_LIST: " + Settings.System.getStringForUser(this.mContext.getContentResolver(), RECENT_TASK_LOCKED_LIST, currentUserId));
         } catch (Exception e) {
-            Log.e(TAG, "dump error: ", e);
+            // Log.e(TAG, "dump error: ", e);
         }
         printWriter.println();
     }
@@ -305,7 +305,7 @@ public class LauncherLockedStateController {
         try {
             str = Settings.System.getStringForUser(this.mContext.getContentResolver(), RECENT_TASK_LOCKED_LIST_BK, i);
         } catch (Exception e) {
-            Log.e(TAG, "writeLockedListToProvider error: ", e);
+            // Log.e(TAG, "writeLockedListToProvider error: ", e);
             str = null;
         }
         if (str == null) {
@@ -329,7 +329,7 @@ public class LauncherLockedStateController {
         try {
             Settings.System.putStringForUser(this.mContext.getContentResolver(), RECENT_TASK_LOCKED_LIST_BK, "done", i);
         } catch (Exception e2) {
-            Log.e(TAG, "writeLockedListToProvider error: ", e2);
+            // Log.e(TAG, "writeLockedListToProvider error: ", e2);
         }
         return true;
     }

@@ -27,10 +27,10 @@ public class TaskUtilLockState {
     private static boolean updateSpecifiedTaskLockState(Context context, ComponentName componentName, Task.TaskKey taskKey) {
         boolean taskLockState = LauncherLockedStateController.getInstance(context)
                 .getTaskLockState(componentName.toShortString(), taskKey.userId);
-        Log.d(TAG, "updateSpecifiedTaskLockState: Checking if the task is locked: " + taskLockState);
+        // Log.d(TAG, "updateSpecifiedTaskLockState: Checking if the task is locked: " + taskLockState);
         if (taskLockState) {
             setTaskLockState(context, taskKey.baseIntent.getComponent(), taskLockState, taskKey);
-            Log.i(TAG, "updateSpecifiedTaskLockState: Task is locked, clearing the lock state.");
+            // Log.i(TAG, "updateSpecifiedTaskLockState: Task is locked, clearing the lock state.");
         }
         return taskLockState;
     }
@@ -57,14 +57,14 @@ public class TaskUtilLockState {
     }
     public static void addLockedApp(String appStr) {
         if (!mLockedApps.contains(appStr)) {
-            Log.d(TAG, "addLockedApp: " + appStr);
+            // Log.d(TAG, "addLockedApp: " + appStr);
             mLockedApps.add(appStr);
             saveLockedApps(mLockedApps);
         }
     }
     public static void removeLockedApp(String appStr) {
         if (mLockedApps.contains(appStr)) {
-            Log.d(TAG, "removeLockedApp: " + appStr);
+            // Log.d(TAG, "removeLockedApp: " + appStr);
             mLockedApps.remove(appStr);
             saveLockedApps(mLockedApps);
         }

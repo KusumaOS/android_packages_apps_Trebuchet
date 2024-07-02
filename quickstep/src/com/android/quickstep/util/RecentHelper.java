@@ -70,7 +70,7 @@ public class RecentHelper {
                 }
             }
         } catch (Exception exception) {
-            Log.e(TAG, "clearAllTaskStacks: ", exception);
+            // Log.e(TAG, "clearAllTaskStacks: ", exception);
             ActivityManagerWrapper.getInstance().removeAllRecentTasks();
         }
     }
