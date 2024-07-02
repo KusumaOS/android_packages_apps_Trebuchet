@@ -1699,14 +1699,14 @@ public class TaskView extends FrameLayout implements Reusable {
 
     public void updateLockedView(boolean isLock, boolean isState) {
         if (this.mLockedView == null) {
-            Log.d(TAG, "updateLockedView: mLockedView is null.");
+            // Log.d(TAG, "updateLockedView: mLockedView is null.");
             return;
         }
         Task task = mTask;
         if (!(task == null || task.key == null || !isState)) {
             if (isLock == (this.mLockedView.getVisibility() != View.VISIBLE)) {
                 boolean taskLockState = TaskUtilLockState.getTaskLockState(getContext(), mTask.key.baseIntent.getComponent(), mTask.key);
-                Log.d(TAG, "updateLockedView: update task lockState: " + isState + " -> " + taskLockState + " , task.key.id: " + mTask.key.id);
+                // Log.d(TAG, "updateLockedView: update task lockState: " + isState + " -> " + taskLockState + " , task.key.id: " + mTask.key.id);
                 isLock = taskLockState;
             }
         }
