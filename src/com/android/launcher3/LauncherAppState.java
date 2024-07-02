@@ -39,6 +39,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.customization.IconDatabase;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconProvider;
@@ -235,6 +236,7 @@ public class LauncherAppState implements SafeCloseable {
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
             if (Themes.KEY_THEMED_ICONS.equals(key)) {
                 mIconProvider.setIconThemeSupported(Themes.isThemedIconEnabled(mContext));
+                IconDatabase.resetGlobal(mContext);
                 verifyIconChanged();
             }
         }

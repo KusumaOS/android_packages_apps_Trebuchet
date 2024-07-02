@@ -64,6 +64,7 @@ import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.uioverrides.flags.DeveloperOptionsFragment;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.Themes;
 
 import java.util.Collections;
 import java.util.List;
@@ -210,7 +211,7 @@ public class SettingsActivity extends FragmentActivity
 
         private String mHighLightKey;
         private boolean mPreferenceHighlighted = false;
-        private Preference mDeveloperOptionPref, mHotseatQsbPref;
+        private Preference mDeveloperOptionPref, mHotseatQsbPref, mIconPackPref;
 
         private boolean mPendingRestart = false;
 
@@ -365,6 +366,8 @@ public class SettingsActivity extends FragmentActivity
 
                 case IconDatabase.KEY_ICON_PACK:
                     setupIconPackPreference(preference);
+                    mIconPackPref = preference;
+                    updateIsIconPackAvailable();
                     return true;
 
                 case KEY_HOTSEAT_QSB:
@@ -394,6 +397,17 @@ public class SettingsActivity extends FragmentActivity
             return showPreference;
         }
 
+        private void updateIsIconPackAvailable() {
+            if (mIconPackPref != null) {
+                if (Themes.isThemedIconEnabled(getContext())) {
+                    mIconPackPref.setEnabled(false);
+                    mIconPackPref.setSummary(R.string.icon_pack_disabled);
+                } else {
+                    mIconPackPref.setEnabled(true);
+                }
+            }
+        }
+
         private void updateIsQsbAvailable() {
             if (mHotseatQsbPref != null) {
                 mHotseatQsbPref.setVisible(Utilities.isQsbAvailable(getContext()));
@@ -405,6 +419,7 @@ public class SettingsActivity extends FragmentActivity
             super.onResume();
 
             updateDeveloperOption();
+            updateIsIconPackAvailable();
             updateIsQsbAvailable();
 
             if (isAdded() && !mPreferenceHighlighted) {
