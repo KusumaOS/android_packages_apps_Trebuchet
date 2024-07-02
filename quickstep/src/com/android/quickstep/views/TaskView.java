@@ -1610,7 +1610,7 @@ public class TaskView extends FrameLayout implements Reusable {
         mFullscreenProgress = progress;
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
         boolean taskLockState = TaskUtilLockState.getTaskLockState(getContext(), this.mTask.key.baseIntent.getComponent(), mTask.key);
-        mLockedView.setVisibility(taskLockState && progress < 1 ? VISIBLE : INVISIBLE);
+        mLockedView.setVisibility(INVISIBLE);
         mSnapshotView.getTaskOverlay().setFullscreenProgress(progress);
 
         // Animate icons and DWB banners in/out, except in QuickSwitch state, when tiles are
@@ -1710,7 +1710,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 isLock = taskLockState;
             }
         }
-        mLockedView.setVisibility(isLock ? VISIBLE : INVISIBLE);
+        mLockedView.setVisibility(INVISIBLE);
     }
 
     public void updateLockedView(boolean isLock) {
