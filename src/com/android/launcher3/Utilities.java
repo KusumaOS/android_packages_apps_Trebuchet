@@ -139,6 +139,7 @@ public final class Utilities {
     public static final String KEY_HOTSEAT_QSB = "pref_hotseat_qsb";
 
     public static final String GSA_PACKAGE = "com.google.android.googlequicksearchbox";
+    public static final String GSA_LITE_PACKAGE = "com.google.android.apps.searchlite";
 
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or

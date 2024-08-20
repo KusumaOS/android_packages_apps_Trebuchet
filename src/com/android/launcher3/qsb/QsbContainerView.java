@@ -48,6 +48,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.FragmentWithPreview;
+import com.android.launcher3.lineage.LineageUtils;
 import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
@@ -68,16 +69,9 @@ public class QsbContainerView extends FrameLayout {
      */
     @Nullable
     public static String getSearchWidgetPackageName(@NonNull Context context) {
-        String providerPkg = Settings.Global.getString(context.getContentResolver(),
-                SEARCH_PROVIDER_SETTINGS_KEY);
-        if (providerPkg == null) {
-            SearchManager searchManager = context.getSystemService(SearchManager.class);
-            ComponentName componentName = searchManager.getGlobalSearchActivity();
-            if (componentName != null) {
-                providerPkg = searchManager.getGlobalSearchActivity().getPackageName();
-            } else {
-                providerPkg = Utilities.GSA_PACKAGE;
-            }
+        String providerPkg = Utilities.GSA_PACKAGE;
+        if (!LineageUtils.isPackageEnabled(context, Utilities.GSA_PACKAGE)) {
+            providerPkg = Utilities.GSA_LITE_PACKAGE;
         }
         return providerPkg;
     }
