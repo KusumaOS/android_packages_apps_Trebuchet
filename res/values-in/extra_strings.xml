@@ -26,6 +26,7 @@
     <string name="icon_pack_default_label">Default</string>
     <string name="icon_pack_add">Tambahkan</string>
     <string name="icon_pack_no_market">Tidak ada toko aplikasi yang tersedia</string>
+    <string name="icon_pack_disabled">Untuk mengaktifkan, ubah ikon bertema ke nonaktif</string>
 
     <!-- Hotseat QSB -->
     <string name="hotseat_qsb_pref_title">Tampilkan bilah pencarian Google</string>
