@@ -120,8 +120,8 @@ public interface TaskShortcutFactory {
             boolean isLocked = RecentHelper.getInstance().isAppLocked(task.key.getPackageName(), taskView.getContext());
 
             return Collections.singletonList(new LockedSystemShortcut(
-                    isLocked ? R.drawable.ic_protected_unlocked : R.drawable.ic_protected_locked,
-                    isLocked ? R.string.recent_task_option_unlock_app : R.string.recent_task_option_lock_app,
+                    isLocked ? R.drawable.ic_protected_locked : R.drawable.ic_protected_unlocked,
+                    isLocked ? R.string.recent_task_option_lock_app : R.string.recent_task_option_unlock_app,
                     activity, taskContainer.getItemInfo (), taskContainer.getTaskView(), taskView));
         }
 
